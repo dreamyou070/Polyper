@@ -43,10 +43,9 @@ def main(args):
     # resume training
     cfg.resume = args.resume
     print(f' step 2. build the runner from config')
-    if 'runner_type' not in cfg:
-        # build the default runner
 
-        # from cfg ...........
+    if 'runner_type' not in cfg:
+        print(f' start from config !')
         runner = Runner.from_cfg(cfg)
     else:
         # build customized runner from the registry

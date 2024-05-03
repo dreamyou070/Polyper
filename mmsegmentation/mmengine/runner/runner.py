@@ -458,6 +458,7 @@ class Runner:
         Returns:
             Runner: A runner build from ``cfg``.
         """
+        print(f'From Config !')
         cfg = copy.deepcopy(cfg)
         runner = cls(
             model=cfg['model'],
