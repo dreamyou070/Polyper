@@ -48,8 +48,6 @@ def main(args):
         print(f' start from config !')
         runner = Runner.from_cfg(cfg)
     else:
-        # build customized runner from the registry
-        # if 'runner_type' is set in the cfg
         runner = RUNNERS.build(cfg)
 
     #model = runner.model
