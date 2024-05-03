@@ -1702,6 +1702,8 @@ class Runner:
             self._has_loaded = True
 
     def train(self) -> nn.Module:
+
+
         """Launch training.
 
         Returns:
@@ -1776,8 +1778,10 @@ class Runner:
         # This must be called **AFTER** model has been wrapped.
         self._maybe_compile('train_step')
 
+        print(f'Launch training')
         model = self.train_loop.run()  # type: ignore
         self.call_hook('after_run')
+        
         return model
 
     def val(self) -> dict:
