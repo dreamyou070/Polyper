@@ -1,0 +1,1 @@
+python tools/train.py local_config/Polyper-AAAI2024/main/polyper_polypseg.py
