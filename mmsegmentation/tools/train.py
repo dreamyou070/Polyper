@@ -30,10 +30,9 @@ def main(args):
     if args.amp is True:
         optim_wrapper = cfg.optim_wrapper.type
         if optim_wrapper == 'AmpOptimWrapper':
-            print_log(
-                'AMP training is already enabled in your config.',
-                logger='current',
-                level=logging.WARNING)
+            print_log('AMP training is already enabled in your config.',
+                      logger='current',
+                      level=logging.WARNING)
         else:
             assert optim_wrapper == 'OptimWrapper', (
                 '`--amp` is only supported when the optimizer wrapper type is '
@@ -46,16 +45,23 @@ def main(args):
     print(f' step 2. build the runner from config')
     if 'runner_type' not in cfg:
         # build the default runner
+
+        # from cfg ...........
         runner = Runner.from_cfg(cfg)
     else:
         # build customized runner from the registry
         # if 'runner_type' is set in the cfg
         runner = RUNNERS.build(cfg)
 
-    model = runner.model
+    #model = runner.model
+
 
     # start training
-    runner.train()
+    # how many epoch ?
+    model = runner.train()
+    # save model
+
+
 
     # mmengine.runner.Runner(model, work_dir,
     # train_dataloader=None, val_dataloader=None, test_dataloader=None,

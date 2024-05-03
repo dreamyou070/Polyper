@@ -142,9 +142,9 @@ class RefineAttention(nn.Module):
 class Polyper(BaseDecodeHead):
     def __init__(self,in_channels,image_size,heads,
                  **kwargs):
+
         super(Polyper, self).__init__(in_channels,input_transform = 'multiple_select',**kwargs)
         self.image_size = image_size
-
         self.refine1 = RefineAttention(in_channels[0],heads,LayerNorm_type = 'WithBias')
         self.refine2 = RefineAttention(in_channels[1],heads,LayerNorm_type = 'WithBias')
         self.refine3 = RefineAttention(in_channels[2],heads,LayerNorm_type = 'WithBias')
