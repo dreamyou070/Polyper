@@ -1703,6 +1703,8 @@ class Runner:
 
     def train(self) -> nn.Module:
 
+        print(f' Stert of Train Method ... ')
+
 
         """Launch training.
 
@@ -1729,6 +1731,8 @@ class Runner:
                 '`optimizer` and `param_scheduler` arguments when '
                 'initializing runner.')
 
+        print(f'Building Train Loop ... ')
+
         self._train_loop = self.build_train_loop(
             self._train_loop)  # type: ignore
 
@@ -1742,20 +1746,19 @@ class Runner:
             self.param_schedulers = self.build_param_scheduler(  # type: ignore
                 self.param_schedulers)  # type: ignore
 
+        print(f'Building Val Loop ... ')
         if self._val_loop is not None:
             self._val_loop = self.build_val_loop(
                 self._val_loop)  # type: ignore
         # TODO: add a contextmanager to avoid calling `before_run` many times
         self.call_hook('before_run')
-
         # initialize the model weights
         self._init_model_weights()
 
         # try to enable activation_checkpointing feature
         modules = self.cfg.get('activation_checkpointing', None)
         if modules is not None:
-            self.logger.info(f'Enabling the "activation_checkpointing" feature'
-                             f' for sub-modules: {modules}')
+            self.logger.info(f'Enabling the "activation_checkpointing" feature for sub-modules: {modules}')
             turn_on_activation_checkpointing(ori_model, modules)
 
         # try to enable efficient_conv_bn_eval feature
@@ -1769,24 +1772,22 @@ class Runner:
         self.load_or_resume()
 
         # Initiate inner count of `optim_wrapper`.
-        self.optim_wrapper.initialize_count_status(
-            self.model,
-            self._train_loop.iter,  # type: ignore
-            self._train_loop.max_iters)  # type: ignore
+        self.optim_wrapper.initialize_count_status(self.model,
+                                                   self._train_loop.iter,  # type: ignore
+                                                   self._train_loop.max_iters)  # type: ignore
 
         # Maybe compile the model according to options in self.cfg.compile
         # This must be called **AFTER** model has been wrapped.
         self._maybe_compile('train_step')
 
-        print(f'Launch training')
+        print(f' ** Launch training ** ')
         model = self.train_loop.run()  # type: ignore
         self.call_hook('after_run')
-        
+
         return model
 
     def val(self) -> dict:
         """Launch validation.
-
         Returns:
             dict: A dict of metrics on validation set.
         """
@@ -1802,7 +1803,7 @@ class Runner:
 
         # make sure checkpoint-related hooks are triggered after `before_run`
         self.load_or_resume()
-
+        ################################################################################################################
         metrics = self.val_loop.run()  # type: ignore
         self.call_hook('after_run')
         return metrics
