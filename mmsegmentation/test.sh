@@ -1,0 +1,2 @@
+python tools/test.py /medical_seg/mmsegmentation/local_config/Polyper-AAAI2024/main/polyper_polypseg.py \
+    /medical_seg/mmsegmentation/work_dirs/polyper_polypseg_224224_80k/iter_80000.pth --eval mIoU

@@ -5,14 +5,13 @@ import os
 import os.path as osp
 from mmengine.config import Config, DictAction
 from mmengine.logging import print_log
-from mmengine.runner import Runner
-
+from mmengine.runner import Runner # Runner ?
 from mmseg.registry import RUNNERS
 
 
 def main(args):
 
-    # load config
+    print(f' step 1. load config')
     cfg = Config.fromfile(args.config)
     cfg.launcher = args.launcher
     if args.cfg_options is not None:
@@ -44,8 +43,7 @@ def main(args):
 
     # resume training
     cfg.resume = args.resume
-
-    # build the runner from config
+    print(f' step 2. build the runner from config')
     if 'runner_type' not in cfg:
         # build the default runner
         runner = Runner.from_cfg(cfg)
@@ -54,16 +52,28 @@ def main(args):
         # if 'runner_type' is set in the cfg
         runner = RUNNERS.build(cfg)
 
+    model = runner.model
+
     # start training
     runner.train()
+
+    # mmengine.runner.Runner(model, work_dir,
+    # train_dataloader=None, val_dataloader=None, test_dataloader=None,
+    # train_cfg=None, val_cfg=None, test_cfg=None,
+    # auto_scale_lr=None, optim_wrapper=None, param_scheduler=None,
+    # val_evaluator=None, test_evaluator=None, default_hooks=None,
+    # custom_hooks=None, data_preprocessor=None, load_from=None,
+    # resume=False, launcher='none',
+    # env_cfg={'dist_cfg': {'backend': 'nccl'}},
+    # log_processor=None, log_level='INFO', visualizer=None,
+    # default_scope='mmengine', randomness={'seed': None}, experiment_name=None, cfg=None)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train a segmentor')
     parser.add_argument('config', help='train config file path')
     parser.add_argument('--work-dir', help='the dir to save logs and models')
-    parser.add_argument(
-        '--resume',
+    parser.add_argument('--resume',
         action='store_true',
         default=False,
         help='resume from the latest checkpoint in the work_dir automatically')

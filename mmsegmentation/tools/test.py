@@ -8,54 +8,6 @@ from mmengine.runner import Runner
 
 
 # TODO: support fuse_conv_bn, visualization, and format_only
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description='MMSeg test (and eval) a model')
-    parser.add_argument('config', help='train config file path')
-    parser.add_argument('checkpoint', help='checkpoint file')
-    parser.add_argument(
-        '--work-dir',
-        help=('if specified, the evaluation metric results will be dumped'
-              'into the directory as json'))
-    parser.add_argument(
-        '--out',
-        type=str,
-        help='The directory to save output prediction for offline evaluation')
-    parser.add_argument(
-        '--show', action='store_true', help='show prediction results')
-    parser.add_argument(
-        '--show-dir',
-        help='directory where painted images will be saved. '
-        'If specified, it will be automatically saved '
-        'to the work_dir/timestamp/show_dir')
-    parser.add_argument(
-        '--wait-time', type=float, default=2, help='the interval of show (s)')
-    parser.add_argument(
-        '--cfg-options',
-        nargs='+',
-        action=DictAction,
-        help='override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file. If the value to '
-        'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
-        'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
-        'Note that the quotation marks are necessary and that no white space '
-        'is allowed.')
-    parser.add_argument(
-        '--launcher',
-        choices=['none', 'pytorch', 'slurm', 'mpi'],
-        default='none',
-        help='job launcher')
-    parser.add_argument(
-        '--tta', action='store_true', help='Test time augmentation')
-    # When using PyTorch version >= 2.0.0, the `torch.distributed.launch`
-    # will pass the `--local-rank` parameter to `tools/train.py` instead
-    # of `--local_rank`.
-    parser.add_argument('--local_rank', '--local-rank', type=int, default=0)
-    args = parser.parse_args()
-    if 'LOCAL_RANK' not in os.environ:
-        os.environ['LOCAL_RANK'] = str(args.local_rank)
-
-    return args
 
 
 def trigger_visualization_hook(cfg, args):
@@ -79,8 +31,7 @@ def trigger_visualization_hook(cfg, args):
     return cfg
 
 
-def main():
-    args = parse_args()
+def main(args):
 
     # load config
     cfg = Config.fromfile(args.config)
@@ -120,4 +71,50 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(
+        description='MMSeg test (and eval) a model')
+    parser.add_argument('config', help='train config file path')
+    parser.add_argument('checkpoint', help='checkpoint file')
+    parser.add_argument(
+        '--work-dir',
+        help=('if specified, the evaluation metric results will be dumped'
+              'into the directory as json'))
+    parser.add_argument(
+        '--out',
+        type=str,
+        help='The directory to save output prediction for offline evaluation')
+    parser.add_argument(
+        '--show', action='store_true', help='show prediction results')
+    parser.add_argument(
+        '--show-dir',
+        help='directory where painted images will be saved. '
+             'If specified, it will be automatically saved '
+             'to the work_dir/timestamp/show_dir')
+    parser.add_argument(
+        '--wait-time', type=float, default=2, help='the interval of show (s)')
+    parser.add_argument(
+        '--cfg-options',
+        nargs='+',
+        action=DictAction,
+        help='override some settings in the used config, the key-value pair '
+             'in xxx=yyy format will be merged into config file. If the value to '
+             'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
+             'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
+             'Note that the quotation marks are necessary and that no white space '
+             'is allowed.')
+    parser.add_argument(
+        '--launcher',
+        choices=['none', 'pytorch', 'slurm', 'mpi'],
+        default='none',
+        help='job launcher')
+    parser.add_argument(
+        '--tta', action='store_true', help='Test time augmentation')
+    # When using PyTorch version >= 2.0.0, the `torch.distributed.launch`
+    # will pass the `--local-rank` parameter to `tools/train.py` instead
+    # of `--local_rank`.
+    parser.add_argument('--local_rank', '--local-rank', type=int, default=0)
+    args = parser.parse_args()
+    if 'LOCAL_RANK' not in os.environ:
+        os.environ['LOCAL_RANK'] = str(args.local_rank)
+
+    main(args)
